@@ -63,6 +63,8 @@ AGENT/
 ├── scripts/                 # Utility scripts
 ├── deployment/              # Deployment configurations
 └── docs/                    # Documentation
+```
+
 ## 🛠️ Technology Stack
 
 - **AI Framework**: LangChain, OpenAI GPT-4
@@ -366,7 +368,7 @@ gunicorn api.main:app -w 4 -k uvicorn.workers.UvicornWorker
 4. Configure environment variables
 5. Run application
 
-## �️ Roadmap
+## 🗺️ Roadmap
 
 ### Current Status: ✅ Production Ready
 - ✅ Multi-agent architecture implemented
