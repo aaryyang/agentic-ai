@@ -4,6 +4,7 @@ Updated to use Groq's Llama model instead of OpenAI
 """
 
 import asyncio
+import re
 from typing import Dict, List, Optional, Any
 from groq import Groq
 from langchain.schema import HumanMessage, SystemMessage
@@ -178,20 +179,23 @@ class CoreAIAgent:
             # Call Groq LLM
             response_content = await self._call_groq_llm(messages)
             
+            # Format the response for better readability
+            formatted_response = self._format_response(response_content)
+            
             # Store response in memory
             if user_id:
                 self.conversation_memory[user_id].append({
                     "role": "assistant", 
-                    "content": response_content,
+                    "content": formatted_response,
                     "timestamp": "2025-06-28T10:00:00Z"
                 })
             
-            # Determine actions taken based on message content
-            actions_taken = self._analyze_actions(message, response_content)
+            # Determine actions taken based on message content (but don't show them)
+            actions_taken = []  # Hide actions from user
             
             agent_response = AgentResponse(
                 agent_type="core",
-                response=response_content,
+                response=formatted_response,
                 actions_taken=actions_taken,
                 metadata={
                     "user_id": user_id,
@@ -231,10 +235,19 @@ class CoreAIAgent:
 
         When handling requests:
         1. Analyze the user's intent and determine the best approach
-        2. Provide clear, actionable responses
-        3. Suggest process improvements when appropriate
-        4. Always confirm important actions before execution
-        5. Be helpful, professional, and proactive
+        2. Provide clear, actionable responses with proper formatting
+        3. Use bullet points for lists (starting with -)
+        4. Use numbered lists for step-by-step processes
+        5. Ask follow-up questions when needed
+        6. Be helpful, professional, and proactive
+        7. Keep responses well-structured and easy to read
+
+        Formatting guidelines:
+        - Use simple text without markdown formatting
+        - Start new bullet points on separate lines with -
+        - Use numbered lists (1., 2., 3.) for sequences
+        - Ask questions clearly and directly
+        - Avoid excessive asterisks or special characters
 
         Available specialized areas:
         - Sales: Lead management, pipeline updates, deal tracking
@@ -413,3 +426,36 @@ class CoreAIAgent:
         else:
             self.conversation_memory.clear()
             logger.info("Cleared all conversation memory")
+    
+    def _format_response(self, response_text: str) -> str:
+        """Format the response text for better readability"""
+        
+        # Remove markdown formatting
+        text = response_text.replace("**", "").replace("*", "")
+        
+        # Simple but effective formatting
+        # Replace common patterns that should be on new lines
+        
+        # Handle bullet points
+        text = text.replace(' • ', '\n• ')
+        text = text.replace(' - ', '\n• ')
+        
+        # Handle questions that should be on new lines
+        text = text.replace('? ', '?\n')
+        
+        # Handle numbered lists
+        for i in range(1, 10):
+            text = text.replace(f' {i}. ', f'\n{i}. ')
+        
+        # Handle "For example:" type phrases
+        text = text.replace(' For example:', '\n\nFor example:')
+        text = text.replace(' To better assist', '\n\nTo better assist')
+        text = text.replace(' The more information', '\n\nThe more information')
+        
+        # Clean up multiple newlines and spaces
+        while '\n\n\n' in text:
+            text = text.replace('\n\n\n', '\n\n')
+        
+        text = text.replace('  ', ' ')
+        
+        return text.strip()

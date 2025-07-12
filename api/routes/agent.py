@@ -61,7 +61,6 @@ async def chat_with_agent(request: ChatRequest):
             "response": response.response,
             "agent_type": response.agent_type,
             "success": response.success,
-            "actions_taken": response.actions_taken,
             "metadata": response.metadata
         }
         
@@ -94,7 +93,6 @@ async def delegate_to_agent(request: DelegationRequest):
             "response": response.response,
             "agent_type": response.agent_type,
             "success": response.success,
-            "actions_taken": response.actions_taken,
             "metadata": response.metadata
         }
         

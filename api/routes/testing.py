@@ -46,9 +46,7 @@ async def testing_dashboard():
             </div>
             
             <div class="chat-box" id="chat-box">
-                <div class="message agent-message">
-                    <strong>Agent:</strong> Hello! I'm your AI assistant. How can I help you today?
-                </div>
+                <div class="message agent-message"><strong>Agent:</strong> Hello! I'm your AI assistant. How can I help you today?</div>
             </div>
             
             <div class="input-section">
@@ -112,9 +110,6 @@ async def testing_dashboard():
                     const result = await response.json();
                     addMessage(result.response, 'agent');
                     
-                    if (result.actions_taken && result.actions_taken.length > 0) {
-                        addMessage(`Actions: ${result.actions_taken.join(', ')}`, 'agent', true);
-                    }
                 } catch (error) {
                     addMessage('Error: ' + error.message, 'agent');
                 }
@@ -154,7 +149,9 @@ async def testing_dashboard():
                 if (isAction) {
                     messageDiv.innerHTML = `<em>${text}</em>`;
                 } else {
-                    messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'Agent'}:</strong> ${text}`;
+                    // Convert newlines to HTML breaks for better display
+                    const formattedText = text.split('\\n').join('<br>');
+                    messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'Agent'}:</strong> ${formattedText}`;
                 }
                 
                 chatBox.appendChild(messageDiv);
