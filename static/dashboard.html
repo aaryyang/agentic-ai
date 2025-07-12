@@ -412,6 +412,104 @@
             font-weight: 500;
         }
 
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.75rem 0.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--dark-light);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .action-btn i {
+            font-size: 1rem;
+        }
+
+        /* Multi-Tasking Features */
+        .multi-task-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-templates {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .template-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.8rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-item:hover {
+            background: var(--dark-light);
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+
+        .template-item i {
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .workflow-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .workflow-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .workflow-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
         /* Loading Animation */
         .typing-indicator {
             display: flex;
@@ -623,6 +721,78 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Quick Actions -->
+            <div class="status-card">
+                <div class="status-header">
+                    <div class="status-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3 class="status-title">Quick Actions</h3>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="quickAction('sales')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Sales Agent</span>
+                    </button>
+                    <button class="action-btn" onclick="quickAction('operations')">
+                        <i class="fas fa-cogs"></i>
+                        <span>Operations</span>
+                    </button>
+                    <button class="action-btn" onclick="quickAction('quote')">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Quote Gen</span>
+                    </button>
+                    <button class="action-btn" onclick="quickAction('scheduler')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Multi-Tasking Features -->
+            <div class="status-card">
+                <div class="status-header">
+                    <div class="status-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div>
+                        <h3 class="status-title">Multi-Tasking</h3>
+                    </div>
+                </div>
+                <div class="multi-task-section">
+                    <div class="task-templates">
+                        <div class="template-item" onclick="useTemplate('lead-qualification')">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Lead Qualification</span>
+                        </div>
+                        <div class="template-item" onclick="useTemplate('quote-request')">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>Quote Request</span>
+                        </div>
+                        <div class="template-item" onclick="useTemplate('meeting-setup')">
+                            <i class="fas fa-handshake"></i>
+                            <span>Meeting Setup</span>
+                        </div>
+                        <div class="template-item" onclick="useTemplate('follow-up')">
+                            <i class="fas fa-phone"></i>
+                            <span>Follow-up</span>
+                        </div>
+                    </div>
+                    <div class="workflow-actions">
+                        <button class="workflow-btn" onclick="startWorkflow()">
+                            <i class="fas fa-play"></i>
+                            Start Workflow
+                        </button>
+                        <button class="workflow-btn" onclick="showWorkflowHistory()">
+                            <i class="fas fa-history"></i>
+                            History
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -795,6 +965,45 @@
                 sendMessage();
             }
         });
+
+        // Quick Actions
+        function quickAction(agentType) {
+            const messages = {
+                'sales': "I need help with sales pipeline management and lead qualification.",
+                'operations': "Can you help me automate my business operations and workflows?",
+                'quote': "I need assistance with generating quotes and pricing calculations.",
+                'scheduler': "Help me schedule meetings and manage my calendar."
+            };
+            
+            const input = document.getElementById('message-input');
+            input.value = messages[agentType];
+            input.focus();
+        }
+
+        // Template Functions
+        function useTemplate(templateType) {
+            const templates = {
+                'lead-qualification': "I have a new lead that needs qualification. Can you help me assess their potential using BANT criteria?",
+                'quote-request': "I need to generate a comprehensive quote for a client. Can you guide me through the pricing process?",
+                'meeting-setup': "I need to schedule a meeting with a client. Can you help me coordinate the logistics?",
+                'follow-up': "I need to set up follow-up actions for my recent leads. Can you help me create a follow-up sequence?"
+            };
+            
+            const input = document.getElementById('message-input');
+            input.value = templates[templateType];
+            input.focus();
+        }
+
+        // Workflow Functions
+        function startWorkflow() {
+            addMessage("I want to start a comprehensive workflow. Can you help me set up an automated process for lead management, qualification, and follow-up?", 'user');
+            sendMessage();
+        }
+
+        function showWorkflowHistory() {
+            addMessage("Can you show me the history of my workflows and automated processes?", 'user');
+            sendMessage();
+        }
 
         // Initialize
         checkStatus();
