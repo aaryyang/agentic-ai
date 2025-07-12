@@ -37,7 +37,7 @@ A sophisticated multi-agent AI system for CRM automation with beautiful web inte
 ## 🏗️ Project Structure
 
 ```
-AI-AGENT/
+agentic-ai/
 ├── 🌐 FRONTEND
 │   └── static/                    # Web interface
 │       ├── index.html            # Beautiful landing page
@@ -51,8 +51,7 @@ AI-AGENT/
 │       ├── routes/               # API endpoints
 │       │   ├── agent.py          # Core agent interactions
 │       │   ├── webhooks.py       # External platform webhooks
-│       │   ├── workflows.py      # Process automation
-│       │   └── testing.py        # Development dashboard
+│       │   └── workflows.py      # Process automation
 │       └── schemas/              # Request/response models
 │           ├── requests.py       # API request schemas
 │           └── responses.py      # API response schemas
@@ -84,17 +83,16 @@ AI-AGENT/
 │   │
 │   └── workflows/                # Process automation
 │       ├── base_workflow.py      # Workflow foundation
-│       ├── automation.py         # Automation engine
-│       └── examples.py           # Workflow templates
+│       └── automation.py         # Automation engine
 │
-├── ⚙️ CONFIGURATION
+├── ⚙️ CONFIGURATION & SCRIPTS
 │   ├── config/                   # Application settings
 │   │   └── settings.py           # Environment configuration
 │   ├── scripts/                  # Utility scripts
-│   │   ├── start.py              # Server launcher
 │   │   └── interactive_chat.py   # Terminal chat
-│   └── .github/                  # GitHub configuration
-│       └── copilot-instructions.md # AI assistant guidelines
+│   ├── manage.py                 # Project manager
+│   ├── setup.ps1                # Setup script
+│   └── dev.ps1                   # Development helper
 │
 └── 📦 PROJECT FILES
     ├── .env                      # Environment variables
@@ -104,7 +102,7 @@ AI-AGENT/
     └── README.md                # This file
 ```
 
-##  Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 - **Python 3.11+** (tested with Python 3.13)
@@ -113,10 +111,49 @@ AI-AGENT/
 
 ### Installation
 
+#### 🚀 Quick Setup (Recommended)
+
+**Windows PowerShell:**
+```powershell
+# 1. Clone and navigate to the project
+git clone <your-repo-url>
+cd agentic-ai
+
+# 2. Run the setup script (creates venv and installs dependencies)
+.\setup.ps1
+
+# 3. Configure your environment
+copy .env.example .env
+# Edit .env with your API keys (see configuration section below)
+
+# 4. Start developing
+.\dev.ps1
+```
+
+**Windows Command Prompt:**
+```cmd
+# 1. Clone and navigate to the project
+git clone <your-repo-url>
+cd agentic-ai
+
+# 2. Run the setup script
+setup.bat
+
+# 3. Configure your environment
+copy .env.example .env
+# Edit .env with your API keys
+
+# 4. Activate environment and start
+.venv\Scripts\activate.bat
+python manage.py
+```
+
+#### 🛠️ Manual Setup
+
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd AGENT
+   cd agentic-ai
    ```
 
 2. **Create virtual environment**
@@ -147,6 +184,10 @@ AI-AGENT/
 
 5. **Start the application**
    ```bash
+   # Option 1: Use the project manager
+   python manage.py
+   
+   # Option 2: Direct FastAPI start
    uvicorn api.main:app --reload --port 8000
    ```
 
@@ -155,6 +196,49 @@ AI-AGENT/
    - **Dashboard**: http://localhost:8000/dashboard
    - **Documentation**: http://localhost:8000/docs-custom
    - **API Info**: http://localhost:8000/api
+
+## 🎯 Project Management Tools
+
+This project includes several convenience tools to make development easier:
+
+### 📋 Project Manager (`manage.py`)
+Interactive menu for common development tasks:
+```bash
+python manage.py
+```
+**Available Options:**
+- **Start API Server** - Launch the FastAPI server with hot reload
+- **Run Interactive Chat** - Terminal-based chat interface
+- **Install/Update Dependencies** - Package management
+- **Format Code** - Code formatting with Black
+- **Check Environment** - Environment status and health check
+
+### 🔧 Setup & Development Scripts
+- **`setup.ps1`**: Complete project setup for Windows PowerShell
+- **`dev.ps1`**: Development environment activator with shortcuts
+
+### 🚀 Quick Commands
+Once your environment is set up:
+```bash
+# Activate development environment (PowerShell)
+.\dev.ps1
+
+# Start API server directly
+python -m uvicorn api.main:app --reload
+
+# Run interactive chat
+python scripts/interactive_chat.py
+
+# Format code
+python -m black .
+```
+
+### 🌐 Application Access
+Once running, access your application at:
+- **🏠 Landing Page**: http://localhost:8000
+- **💬 Dashboard**: http://localhost:8000/dashboard  
+- **📚 API Documentation**: http://localhost:8000/docs
+- **🎯 Custom Docs**: http://localhost:8000/docs-custom
 
 ## 🎯 Usage Examples
 
@@ -276,6 +360,46 @@ npm run start
 python scripts/interactive_chat.py
 ```
 
+## 🔄 Development Workflow
+
+### 📋 **Daily Development**
+1. **Start your session**:
+   ```bash
+   cd agentic-ai
+   .\dev.ps1  # Activates environment with shortcuts
+   ```
+
+2. **Launch the application**:
+   ```bash
+   python manage.py  # Interactive project manager
+   # Select option 1: Start API Server
+   ```
+
+3. **Code and test**:
+   - Make your changes
+   - Test at http://localhost:8000
+   - Use the dashboard at http://localhost:8000/dashboard
+
+4. **Format and commit**:
+   ```bash
+   python -m black .  # Format code
+   git add .
+   git commit -m "feat: your changes"
+   git push
+   ```
+
+### 🎯 **No Testing Setup Required**
+This project focuses on production-ready AI agents without test bloat:
+- **Clean dependencies** - No pytest, mock, or testing frameworks
+- **Lean environment** - Faster installs and deployments
+- **Production focus** - All dependencies serve the core functionality
+
+### 🚀 **Deployment Ready**
+- **Self-contained** - Everything needed is in the project
+- **Environment isolated** - Virtual environment keeps dependencies separate
+- **Configuration managed** - All settings in `.env` file
+- **Platform integrations** - Ready for WhatsApp, Telegram, and web chat
+
 ## 🚀 Production Deployment
 
 ### Basic Production Setup
@@ -347,6 +471,37 @@ Create automated business processes in `workflows/examples.py` and execute them 
    ```bash
    chmod +x scripts/start.py
    ```
+
+## 📦 Key Dependencies
+
+This project uses carefully selected, production-ready dependencies:
+
+### 🤖 **AI & Agent Framework**
+- **LangChain** - Multi-agent orchestration and tools
+- **Groq** - Ultra-fast LLM inference
+- **Pydantic** - Data validation and serialization
+
+### 🌐 **Web Framework**
+- **FastAPI** - Modern, fast web framework
+- **Uvicorn** - ASGI web server
+- **WebSockets** - Real-time communication
+
+### 🔗 **External Integrations**
+- **Python Telegram Bot** - Telegram integration
+- **Twilio** - WhatsApp Business API
+- **Requests** - HTTP client for external APIs
+
+### 🛠️ **Background Tasks & Data**
+- **Celery** - Distributed task queue
+- **Redis** - In-memory data store
+- **NumPy & Pandas** - Data processing
+
+### 📊 **Development & Monitoring**
+- **Structlog** - Structured logging
+- **Prometheus Client** - Metrics collection
+- **Black** - Code formatting
+
+*No testing dependencies included - keeps the production environment lean and focused.*
 
 ## 🎯 Features in Detail
 

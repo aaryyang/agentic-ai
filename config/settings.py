@@ -24,14 +24,22 @@ class Settings(BaseSettings):
     CONVERSATION_MEMORY_SIZE: int = 20
     GROQ_STREAMING: bool = False
     
-    # API Configuration
+    # Server Configuration
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
+    RELOAD: bool = True
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     DEBUG: bool = True
     
+    # Security Configuration
+    SECRET_KEY: str = "your_secret_key_for_production"
+    CORS_ORIGINS: str = "*"
+    
     # External Platform Configuration
     TELEGRAM_BOT_TOKEN: Optional[str] = None
     WHATSAPP_API_TOKEN: Optional[str] = None
+    WHATSAPP_VERIFY_TOKEN: Optional[str] = None
     WHATSAPP_WEBHOOK_TOKEN: Optional[str] = None
     TWILIO_ACCOUNT_SID: Optional[str] = None
     TWILIO_AUTH_TOKEN: Optional[str] = None
@@ -46,11 +54,17 @@ class Settings(BaseSettings):
     # Logging Configuration
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
+    LOG_TO_FILE: bool = False
+    
+    # Development Settings
+    DEVELOPMENT_MODE: bool = True
     
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = True
+        # Allow extra fields from .env file
+        extra = "allow"
 
 
 # Global settings instance

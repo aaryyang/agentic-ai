@@ -16,7 +16,6 @@ import os
 from .routes.agent import router as agent_router
 from .routes.webhooks import router as webhook_router
 from .routes.workflows import router as workflow_router
-from .routes.testing import testing_router
 
 # Configure logging
 structlog.configure(
@@ -84,7 +83,6 @@ app.add_middleware(
 app.include_router(agent_router, prefix="/agent", tags=["agent"])
 app.include_router(webhook_router, prefix="/webhooks", tags=["webhooks"])
 app.include_router(workflow_router, prefix="/workflows", tags=["workflows"])
-app.include_router(testing_router, tags=["testing"])
 
 # Get the project root directory
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -170,6 +168,25 @@ async def docs_custom():
         # Fallback to redirect to standard docs
         from fastapi.responses import RedirectResponse
         return RedirectResponse(url="/docs")
+
+
+@app.get("/dashboard")
+async def dashboard():
+    """Serve the dashboard page"""
+    static_file = os.path.join(STATIC_DIR, "dashboard.html")
+    if os.path.exists(static_file):
+        return FileResponse(static_file)
+    else:
+        # Fallback response if file doesn't exist
+        return {
+            "message": "AI Agent Dashboard",
+            "status": "Available",
+            "endpoints": {
+                "chat": "/agent/chat",
+                "health": "/health",
+                "docs": "/docs"
+            }
+        }
 
 
 if __name__ == "__main__":

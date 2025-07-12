@@ -257,3 +257,73 @@ credentials/
 # Local development
 .local/
 local/
+
+# =============================================================================
+# AI AGENT PROJECT SPECIFIC
+# =============================================================================
+
+# API Keys and Credentials (additional patterns)
+*.key
+*.pem
+*.crt
+*.p12
+*.keystore
+.groq_api_key
+.openai_api_key
+.telegram_token
+.whatsapp_token
+
+# Agent Memory and Cache
+agent_memory/
+conversation_cache/
+memory_store/
+agent_state/
+session_data/
+
+# File uploads and temporary files
+uploads/
+temp_files/
+user_uploads/
+file_cache/
+
+# Background task data
+celery_data/
+redis_data/
+task_queue/
+
+# CRM and Integration Data
+crm_cache/
+integration_logs/
+webhook_logs/
+platform_data/
+
+# Development and Testing
+test_data/
+dev_data/
+sample_data/
+mock_data/
+
+# Performance and Monitoring
+performance_logs/
+metrics/
+monitoring_data/
+prometheus_data/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*_backup
+*_old
+
+# Temporary PowerShell files
+*.ps1~
+*.tmp
+
+# Windows specific
+desktop.ini
+$RECYCLE.BIN/
+
+# =============================================================================
+# END AI AGENT PROJECT SPECIFIC
+# =============================================================================
