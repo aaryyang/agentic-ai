@@ -1,196 +1,186 @@
-# AI Agent System - Multi-Agent CRM Automation
+# 🤖 AI Agent CRM System
 
-A sophisticated LangChain-based multi-agent AI system for CRM automation with external platform integrations. This production-ready system focuses on maximizing process automation via AI Agent workflows and enables external assistant integrations via WhatsApp, web chat, and Telegram.
+A sophisticated multi-agent AI system for CRM automation with beautiful web interface and external platform integrations. Built with FastAPI, LangChain, and modern web technologies.
+
+![AI Agent CRM](https://img.shields.io/badge/AI-Agent%20CRM-blue?style=for-the-badge&logo=robot)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![LangChain](https://img.shields.io/badge/LangChain-121212?style=for-the-badge&logo=chainlink)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
 
 ## ✨ Key Features
 
-### 🤖 Core Agent System
-- **Multi-Agent Architecture**: Specialized agents for sales, operations, quotes, and scheduling
-- **LangChain Integration**: Built on LangChain framework for robust agent orchestration
-- **Process Automation**: Comprehensive workflow automation capabilities
-- **Memory Management**: Conversation memory and context retention
-- **API-First Design**: RESTful API for maximum integration flexibility
-
-### 🎯 Specialized Agents
+### 🤖 Multi-Agent Architecture
+- **Core Agent**: Intelligent orchestrator for complex business tasks
 - **Sales Agent**: Lead qualification, pipeline management, deal analysis
-- **Operations Agent**: Process automation, workflow optimization, task management
-- **Quote Agent**: Pricing calculations, quote generation, proposal creation
-- **Scheduler Agent**: Meeting scheduling, calendar management, follow-ups
+- **Operations Agent**: Process automation, workflow optimization
+- **Quote Agent**: Dynamic pricing, proposal generation
+- **Scheduler Agent**: Meeting coordination, follow-up automation
 
-### 🌐 External Platform Integrations
-- **WhatsApp Business API**: Complete webhook handling and message processing
-- **Telegram Bot**: Full bot integration with command and callback support
-- **Web Chat**: Embeddable chat widget with session management
-- **Real-time Processing**: Async processing for optimal performance
+### 🌐 Beautiful Web Interface
+- **Modern Landing Page**: Professional showcase with dark theme
+- **Interactive Dashboard**: Real-time chat with AI agents
+- **Custom Documentation**: Branded API docs with examples
+- **Responsive Design**: Perfect on desktop and mobile
 
-### ⚡ Workflow Automation
-- **Modular Workflows**: Create complex automated business processes
-- **Multiple Trigger Types**: Manual, scheduled, event-based, and webhook triggers
-- **Flexible Step Types**: Agent tasks, CRM updates, notifications, conditions, loops
-- **Execution Monitoring**: Real-time workflow execution tracking and logging
+### 🔌 Platform Integrations
+- **WhatsApp Business API**: Complete webhook and message processing
+- **Telegram Bot**: Full bot integration with commands
+- **Web Chat Widget**: Embeddable chat for websites
+- **RESTful API**: Easy integration with existing systems
+
+### ⚡ Advanced Capabilities
+- **Workflow Automation**: Create complex business processes
+- **Real-time Processing**: Async operations for performance
+- **Structured Logging**: Comprehensive monitoring and debugging
+- **Error Handling**: Graceful degradation and recovery
 
 ## 🏗️ Project Structure
 
 ```
-AGENT/
-├── api/                      # FastAPI application and routes
-│   ├── main.py              # FastAPI app initialization
-│   └── routes/              # API route definitions
-│       └── agent.py         # Agent interaction endpoints
-├── core/                    # Core AI agent engine
-│   └── engine/
-│       └── core_agent.py    # Main AI Agent orchestrator
-├── integrations/            # External platform integrations
-│   ├── whatsapp_integration.py  # WhatsApp Business API
-│   ├── telegram_integration.py  # Telegram Bot API
-│   └── web_chat_integration.py  # Web chat integration
-├── tools/                   # Agent tools and utilities
-│   ├── base_tool.py         # Base tool interface
-│   ├── agent_tools.py       # Agent delegation tools
-│   ├── crm_tools.py         # CRM integration tools
-│   ├── sales_tools.py       # Sales-specific tools
-│   ├── operations_tools.py  # Operations tools
-│   ├── quote_tools.py       # Quote generation tools
-│   └── scheduler_tools.py   # Scheduling tools
-├── workflows/               # Business workflow automation
-│   ├── base_workflow.py     # Base workflow interface
-│   ├── automation.py        # Workflow automation engine
-│   └── examples.py          # Example workflow configurations
-├── config/                  # Configuration management
-│   └── settings.py          # Application settings
-├── tests/                   # Test suite
-├── examples/                # Usage examples and demos
-├── scripts/                 # Utility scripts
-├── deployment/              # Deployment configurations
-└── docs/                    # Documentation
+AI-AGENT/
+├── 🌐 FRONTEND
+│   └── static/                    # Web interface
+│       ├── index.html            # Beautiful landing page
+│       ├── dashboard.html        # Interactive chat interface
+│       ├── docs.html             # Custom documentation
+│       └── api.html              # API information page
+│
+├── 🔧 BACKEND API
+│   └── api/                      # FastAPI application
+│       ├── main.py               # Application entry point
+│       ├── routes/               # API endpoints
+│       │   ├── agent.py          # Core agent interactions
+│       │   ├── webhooks.py       # External platform webhooks
+│       │   ├── workflows.py      # Process automation
+│       │   └── testing.py        # Development dashboard
+│       └── schemas/              # Request/response models
+│           ├── requests.py       # API request schemas
+│           └── responses.py      # API response schemas
+│
+├── 🤖 AI AGENTS
+│   └── core/                     # Agent system
+│       ├── engine/               # Core AI orchestration
+│       │   └── core_agent.py     # Main agent controller
+│       └── agents/               # Specialized agents
+│           ├── sales_agent.py    # Sales automation
+│           ├── operations_agent.py # Process optimization
+│           ├── quote_agent.py    # Pricing and quotes
+│           └── scheduler_agent.py # Meeting scheduling
+│
+├── 🛠️ TOOLS & INTEGRATIONS
+│   ├── tools/                    # Agent capabilities
+│   │   ├── base_tool.py          # Tool foundation
+│   │   ├── agent_tools.py        # Agent delegation
+│   │   ├── crm_tools.py          # CRM integration
+│   │   ├── sales_tools.py        # Sales operations
+│   │   ├── operations_tools.py   # Process tools
+│   │   ├── quote_tools.py        # Pricing tools
+│   │   └── scheduler_tools.py    # Calendar tools
+│   │
+│   ├── integrations/             # External platforms
+│   │   ├── whatsapp_integration.py # WhatsApp Business
+│   │   ├── telegram_integration.py # Telegram Bot
+│   │   └── web_chat_integration.py # Web Chat
+│   │
+│   └── workflows/                # Process automation
+│       ├── base_workflow.py      # Workflow foundation
+│       ├── automation.py         # Automation engine
+│       └── examples.py           # Workflow templates
+│
+├── ⚙️ CONFIGURATION
+│   ├── config/                   # Application settings
+│   │   └── settings.py           # Environment configuration
+│   ├── scripts/                  # Utility scripts
+│   │   ├── start.py              # Server launcher
+│   │   └── interactive_chat.py   # Terminal chat
+│   └── .github/                  # GitHub configuration
+│       └── copilot-instructions.md # AI assistant guidelines
+│
+└── 📦 PROJECT FILES
+    ├── .env                      # Environment variables
+    ├── .gitignore               # Git ignore rules
+    ├── requirements.txt         # Python dependencies
+    ├── package.json             # Node.js scripts
+    └── README.md                # This file
 ```
 
-## 🛠️ Technology Stack
-
-- **AI Framework**: LangChain, Groq (Llama 4 Scout)
-- **Web Framework**: FastAPI, Uvicorn
-- **Data Validation**: Pydantic
-- **Logging**: Structlog
-- **Async Processing**: Python asyncio
-- **Type Safety**: Python type hints throughout
-
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
-- Python 3.11+ (tested with Python 3.13.2)
-- Groq API key (get from [Groq Console](https://console.groq.com))
-- Git (for version control)
+- **Python 3.11+** (tested with Python 3.13)
+- **Groq API Key** ([Get one here](https://console.groq.com))
+- **Git** for version control
 
 ### Installation
 
-1. **Clone and setup:**
-```bash
-git clone <repository-url>
-cd AGENT
-cp .env.example .env
-```
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd AGENT
+   ```
 
-2. **Configure environment variables:**
-```bash
-# Edit .env file with your API keys
-GROQ_API_KEY=your_groq_api_key_here
-GROQ_MODEL=meta-llama/llama-4-scout-17b-16e-instruct
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token  # Optional
-WHATSAPP_API_TOKEN=your_whatsapp_api_token  # Optional
-```
+2. **Create virtual environment**
+   ```bash
+   python -m venv .venv
+   
+   # Windows
+   .venv\Scripts\activate
+   
+   # Linux/Mac
+   source .venv/bin/activate
+   ```
 
-3. **Install dependencies:**
-```bash
-# Create virtual environment
-python -m venv .venv
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Activate virtual environment
-# Windows:
-.venv\Scripts\activate
-# Linux/Mac:
-source .venv/bin/activate
+4. **Configure environment**
+   ```bash
+   # Create .env file
+   cp .env.example .env
+   
+   # Edit .env with your API keys
+   GROQ_API_KEY=your_groq_api_key_here
+   GROQ_MODEL=meta-llama/llama-4-scout-17b-16e-instruct
+   ```
 
-# Install dependencies
-pip install -r requirements.txt
-```
+5. **Start the application**
+   ```bash
+   uvicorn api.main:app --reload --port 8000
+   ```
 
-4. **Run the application:**
-```bash
-# Start the AI Agent system
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
-```
+6. **Access the interface**
+   - **Landing Page**: http://localhost:8000
+   - **Dashboard**: http://localhost:8000/dashboard
+   - **Documentation**: http://localhost:8000/docs-custom
+   - **API Info**: http://localhost:8000/api
 
-### Verification
+## 🎯 Usage Examples
 
-```bash
-# Test imports and system health
-python -c "
-from api.routes.agent import router
-from core.engine.core_agent import CoreAIAgent
-from integrations.whatsapp_integration import WhatsAppIntegration
-print('✅ All systems operational!')
-"
-```
+### Web Interface
+The easiest way to interact with the AI agents is through the beautiful web dashboard:
 
-## 📚 API Documentation
+1. Navigate to http://localhost:8000
+2. Click "Try Dashboard" to access the chat interface
+3. Start chatting with the AI agents for various tasks
 
-Once running, visit:
-- **API Documentation**: http://localhost:8000/docs
-- **API Schema**: http://localhost:8000/redoc
-- **Health Check**: http://localhost:8000/
+### API Integration
 
-### Core Endpoints
-
-#### Agent Interaction
-```bash
-POST /agent/chat           # Direct agent interaction
-POST /agent/delegate       # Delegate to specialist agents
-GET /agent/status          # Agent system status
-```
-
-#### External Platform Webhooks
-```bash
-# WhatsApp
-GET /whatsapp/webhook      # Webhook verification
-POST /whatsapp/webhook     # Message handling
-
-# Telegram
-POST /telegram/webhook     # Update handling
-
-# Web Chat
-POST /webchat/message      # Message processing
-POST /webchat/session      # Session management
-```
-
-#### Workflow Management
-```bash
-POST /workflows/automate   # Set up process automation
-POST /sales/qualify-lead   # Automated lead qualification
-POST /quotes/generate      # Quote generation
-POST /schedule/meeting     # Meeting scheduling
-```
-
-## 🤖 Usage Examples
-
-### 1. Direct Agent Interaction
-
+#### Basic Agent Chat
 ```python
 import requests
 
-# Chat with the core agent
 response = requests.post("http://localhost:8000/agent/chat", json={
-    "message": "Qualify this lead: John Doe from Acme Corp, $50k budget, needs CRM solution",
-    "user_id": "user_123",
-    "context": {"source": "web_form"}
+    "message": "Qualify this lead: John Doe from Acme Corp, $50k budget",
+    "user_id": "user_123"
 })
 
 print(response.json())
 ```
 
-### 2. Delegate to Specialist Agent
-
+#### Delegate to Specialist
 ```python
-# Delegate to sales agent
 response = requests.post("http://localhost:8000/agent/delegate", json={
     "agent_type": "sales",
     "task": "Update deal ABC123 to proposal stage with 75% probability",
@@ -198,46 +188,49 @@ response = requests.post("http://localhost:8000/agent/delegate", json={
 })
 ```
 
-### 3. WhatsApp Integration
-
+#### Web Chat Integration
 ```python
-# Example webhook payload from WhatsApp
-webhook_data = {
-    "entry": [{
-        "changes": [{
-            "value": {
-                "messages": [{
-                    "from": "1234567890",
-                    "text": {"body": "I need help with pricing"},
-                    "type": "text"
-                }]
-            }
-        }]
-    }]
-}
-
-# This would be sent by WhatsApp to your webhook endpoint
-# POST /whatsapp/webhook
-```
-
-### 4. Web Chat Integration
-
-```python
-# Start a chat session
-response = requests.post("http://localhost:8000/webchat/session", json={
-    "session_id": "session_123",
-    "user_info": {"name": "John", "email": "john@example.com"}
-})
-
-# Send a message
 response = requests.post("http://localhost:8000/webchat/message", json={
     "session_id": "session_123",
     "message": "I need a quote for CRM integration",
-    "user_info": {"name": "John"}
+    "user_info": {"name": "John", "email": "john@example.com"}
 })
 ```
 
-## 🔧 Configuration
+### Terminal Chat
+For developers who prefer command-line interaction:
+
+```bash
+python scripts/interactive_chat.py
+```
+
+## � API Documentation
+
+Once running, explore the comprehensive API documentation:
+
+- **🎨 Custom Docs**: http://localhost:8000/docs-custom (Beautiful, branded)
+- **🔧 Swagger UI**: http://localhost:8000/docs (Interactive testing)
+- **📖 ReDoc**: http://localhost:8000/redoc (Clean reference)
+- **💬 Live Demo**: http://localhost:8000/dashboard (Try the agents)
+
+### Core Endpoints
+
+#### Agent Interaction
+- `POST /agent/chat` - Direct agent conversation
+- `POST /agent/delegate` - Delegate to specialist agents
+- `GET /agent/status` - System health check
+
+#### External Platform Webhooks
+- `POST /whatsapp/webhook` - WhatsApp Business API
+- `POST /telegram/webhook` - Telegram Bot API
+- `POST /webchat/message` - Web chat processing
+
+#### Workflow Management
+- `POST /workflows/create` - Create automation workflows
+- `POST /workflows/{id}/execute` - Execute workflows
+- `GET /workflows/` - List available workflows
+
+## � Configuration
 
 ### Environment Variables
 
@@ -249,173 +242,161 @@ response = requests.post("http://localhost:8000/webchat/message", json={
 | `WHATSAPP_API_TOKEN` | WhatsApp Business API token | No | - |
 | `DEFAULT_AGENT_TEMPERATURE` | LLM temperature setting | No | `0.7` |
 | `MAX_TOKENS` | Maximum tokens per response | No | `1000` |
-| `GROQ_STREAMING` | Enable streaming responses | No | `false` |
 | `LOG_LEVEL` | Logging level | No | `INFO` |
 
 ### Agent Configuration
 
 The system uses intelligent defaults and can be customized through environment variables or the `config/settings.py` file.
 
-## 🔄 Development Workflow
+## 🛠️ Development
 
-### Setting up for Development
-
+### Running in Development Mode
 ```bash
-# 1. Clone the repository
-git clone <your-repo-url>
-cd AGENT
+# With auto-reload
+uvicorn api.main:app --reload --port 8000
 
-# 2. Create and activate virtual environment
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-# source .venv/bin/activate  # Linux/Mac
+# With custom host/port
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
+```
 
-# 3. Install dependencies
+### Using NPM Scripts
+```bash
+# Install npm dependencies (optional)
+npm install
+
+# Start development server
+npm run dev
+
+# Start production server
+npm run start
+```
+
+### Interactive Terminal Chat
+```bash
+python scripts/interactive_chat.py
+```
+
+## 🚀 Production Deployment
+
+### Basic Production Setup
+```bash
+# Install production dependencies
 pip install -r requirements.txt
 
-# 4. Copy environment file
-cp .env.example .env
-
-# 5. Edit .env with your API keys
-# OPENAI_API_KEY=your_key_here
-
-# 6. Run the application
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-python -m pytest tests/
-
-# Run with verbose output
-python -m pytest tests/ -v
-
-# Run specific test file
-python -m pytest tests/test_basic.py
-
-# Run with coverage
-python -m pytest tests/ --cov=.
-```
-
-### Code Quality
-
-```bash
-# Check imports and basic syntax
-python -c "
-from api.routes.agent import router
-from core.engine.core_agent import CoreAIAgent
-print('✅ All imports working correctly')
-"
-```
-
-## 🧪 Testing
-
-The system includes comprehensive tests to ensure reliability:
-
-```bash
-# Run all tests
-python -m pytest tests/
-
-# Run basic functionality tests
-python -m pytest tests/test_basic.py
-
-# Test imports and core functionality
-python examples/demo.py
-
-# Test API endpoints (with server running)
-python examples/usage_examples.py
-```
-
-## 📊 System Status
-
-### Health Monitoring
-- **Application Health**: Automatic system health checks
-- **Agent Status**: Real-time agent availability monitoring
-- **Integration Status**: External platform connection monitoring
-
-### Logging
-- **Structured Logging**: JSON-formatted logs via structlog
-- **Request Tracking**: Full request/response cycle logging
-- **Error Monitoring**: Comprehensive error tracking and reporting
-
-## 🔐 Security Best Practices
-
-- **API Key Management**: Secure environment variable handling
-- **Input Validation**: Pydantic models for data validation
-- **Error Handling**: Graceful error handling without data exposure
-- **Environment Isolation**: Separate development and production configs
-
-## 📈 Deployment
-
-### Local Development
-```bash
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Production Deployment
-```bash
-# Using Uvicorn with production settings
+# Start with multiple workers
 uvicorn api.main:app --host 0.0.0.0 --port 8000 --workers 4
 
-# Or using Gunicorn
+# Or use Gunicorn
 gunicorn api.main:app -w 4 -k uvicorn.workers.UvicornWorker
 ```
 
-### Environment Setup
-1. Clone repository
-2. Set up virtual environment
-3. Install dependencies
-4. Configure environment variables
-5. Run application
+### Environment Configuration
+1. Set production environment variables
+2. Configure proper CORS settings
+3. Set up SSL certificates for webhooks
+4. Configure rate limiting
+5. Set up monitoring and logging
 
-## 🗺️ Roadmap
+## 🔐 Security Best Practices
 
-### Current Status: ✅ Production Ready
-- ✅ Multi-agent architecture implemented
-- ✅ External platform integrations (WhatsApp, Telegram, Web Chat)
-- ✅ API-first design with FastAPI
-- ✅ Comprehensive workflow automation
-- ✅ Production-ready error handling and logging
+- **API Key Management**: Store sensitive keys in environment variables
+- **Input Validation**: All requests validated with Pydantic models
+- **Error Handling**: Graceful error handling without data exposure
+- **Rate Limiting**: Implement for production deployments
+- **CORS Configuration**: Properly configure for your domain
 
-### Phase 3 (Planned)
-- **RAG Integration**: Retrieval-Augmented Generation for knowledge base
-- **Vector Database**: Semantic search capabilities
-- **Advanced Memory**: Long-term conversation memory
-- **Multi-tenant Support**: SaaS-ready architecture
+## 🎨 Customization
 
-### Phase 4 (Future)
-- **Voice Integration**: Speech-to-text and text-to-speech
-- **Analytics Dashboard**: Real-time performance monitoring
-- **Custom Agent Training**: Domain-specific agent customization
-- **Enterprise Features**: Advanced security and compliance
+### Theming
+The web interface uses a beautiful dark theme with:
+- Glass morphism effects
+- Smooth animations and transitions
+- Responsive design for all devices
+- Professional color scheme
+
+### Adding New Agents
+1. Create new agent in `core/agents/`
+2. Add corresponding tools in `tools/`
+3. Update routing in `api/routes/agent.py`
+4. Add documentation to custom docs
+
+### Custom Workflows
+Create automated business processes in `workflows/examples.py` and execute them via the API.
+
+## 🛟 Troubleshooting
+
+### Common Issues
+
+1. **Import Errors**: Ensure all dependencies are installed
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **API Key Issues**: Check your `.env` file configuration
+   ```bash
+   # Verify environment variables
+   echo $GROQ_API_KEY
+   ```
+
+3. **Port Conflicts**: Use a different port
+   ```bash
+   uvicorn api.main:app --port 8080
+   ```
+
+4. **Permission Errors**: Ensure proper file permissions
+   ```bash
+   chmod +x scripts/start.py
+   ```
+
+## 🎯 Features in Detail
+
+### Multi-Agent System
+- **Intelligent Routing**: Automatically determines the best agent for each task
+- **Context Preservation**: Maintains conversation context across agent interactions
+- **Specialized Expertise**: Each agent optimized for specific business functions
+
+### Beautiful Web Interface
+- **Modern Design**: Professional dark theme with glass effects
+- **Real-time Chat**: Instant responses with typing indicators
+- **Responsive Layout**: Perfect experience on all devices
+- **Branded Documentation**: Custom docs matching your brand
+
+### Platform Integrations
+- **WhatsApp Business**: Complete webhook handling and message processing
+- **Telegram Bot**: Full bot functionality with commands and callbacks
+- **Web Chat**: Embeddable widget for websites
+- **RESTful API**: Easy integration with existing systems
+
+## 📈 Performance
+
+- **Async Processing**: Non-blocking operations for optimal performance
+- **Efficient Routing**: Smart request routing to appropriate agents
+- **Memory Management**: Optimized conversation memory handling
+- **Caching**: Intelligent caching for frequently accessed data
 
 ## 🤝 Contributing
 
+We welcome contributions! Please follow these steps:
+
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-- **Documentation**: Check the `/docs` endpoint when running
-- **Issues**: Open GitHub issues for bugs and feature requests
-- **Community**: Join our Discord/Slack for discussions
-
 ## 🙏 Acknowledgments
 
-- LangChain team for the excellent framework
-- OpenAI for powerful language models
-- FastAPI team for the robust web framework
-- All contributors and community members
+- **LangChain Team** for the excellent AI framework
+- **FastAPI Team** for the robust web framework
+- **Groq** for powerful language model APIs
+- **OpenAI** for advancing AI capabilities
 
 ---
 
-**Built with ❤️ for the future of AI-powered business automation**
+**🎉 Built with ❤️ for the future of AI-powered business automation**
+
+For more information, visit our [documentation](http://localhost:8000/docs-custom) or try the [live dashboard](http://localhost:8000/dashboard).

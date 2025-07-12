@@ -36,15 +36,27 @@ class CoreAIAgent:
     """
     
     def __init__(self):
+        # Initialize default attributes first to prevent AttributeError
+        self.groq_client = None
+        self.model = getattr(settings, 'GROQ_MODEL', 'llama3-70b-8192')
+        self.temperature = getattr(settings, 'DEFAULT_AGENT_TEMPERATURE', 0.7)
+        self.max_tokens = getattr(settings, 'MAX_TOKENS', 1000)
+        self.conversation_memory: Dict[str, List[Dict[str, str]]] = {}
+        self.agents = {"sales": {}, "operations": {}, "quote": {}, "scheduler": {}}
+        
         try:
-            # Initialize Groq client
-            self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
-            self.model = settings.GROQ_MODEL
-            self.temperature = settings.DEFAULT_AGENT_TEMPERATURE
-            self.max_tokens = settings.MAX_TOKENS
-            
-            # Simplified memory - just store recent messages
-            self.conversation_memory: Dict[str, List[Dict[str, str]]] = {}
+            # Initialize Groq client 
+            if hasattr(settings, 'GROQ_API_KEY') and settings.GROQ_API_KEY:
+                try:
+                    # Initialize Groq client with the updated version
+                    self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+                    logger.info("Groq client initialized successfully")
+                except Exception as e:
+                    logger.error(f"Groq client initialization failed: {e}")
+                    self.groq_client = None
+            else:
+                logger.warning("GROQ_API_KEY not configured")
+                self.groq_client = None
             
             # Initialize specialized agents (simplified)
             self.agents = {
@@ -54,16 +66,15 @@ class CoreAIAgent:
                 "scheduler": self._create_scheduler_agent()
             }
             
-            logger.info("CoreAIAgent initialized successfully")
+            if self.groq_client is not None:
+                logger.info("CoreAIAgent initialized successfully with Groq API")
+            else:
+                logger.info("CoreAIAgent initialized successfully in mock mode")
             
         except Exception as e:
             logger.error(f"Error initializing CoreAIAgent: {str(e)}")
-            # Create a mock setup for demo purposes if API key is placeholder
-            if "placeholder" in str(settings.GROQ_API_KEY) or not settings.GROQ_API_KEY:
-                self.groq_client = None
-                self.conversation_memory = {}
-                self.agents = {"sales": {}, "operations": {}, "quote": {}, "scheduler": {}}
-                logger.warning("Using mock mode - replace GROQ_API_KEY with real key")
+            # groq_client is already None from default initialization
+            logger.warning("Using mock mode due to initialization error")
     
     async def _call_groq_llm(self, messages: List[Dict[str, str]]) -> str:
         """Call Groq API with message history"""
@@ -84,10 +95,10 @@ class CoreAIAgent:
             
             # Call Groq API
             completion = self.groq_client.chat.completions.create(
-                model=self.model,
+                model=getattr(self, 'model', 'llama3-70b-8192'),
                 messages=groq_messages,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
+                temperature=getattr(self, 'temperature', 0.7),
+                max_tokens=getattr(self, 'max_tokens', 1000),
                 stream=False  # For now, using non-streaming
             )
             
@@ -128,6 +139,7 @@ class CoreAIAgent:
             "expertise": "Meeting scheduling, calendar management, follow-ups",
             "tools": ["calendar_management", "meeting_scheduler", "followup_automation"]
         }
+    
     
     async def process_message(self, message: str, user_id: str = None, 
                             context: Dict[str, Any] = None) -> AgentResponse:
@@ -200,7 +212,7 @@ class CoreAIAgent:
                 metadata={
                     "user_id": user_id,
                     "context": context,
-                    "model_used": self.model
+                    "model_used": getattr(self, 'model', 'unknown')
                 },
                 success=True
             )
@@ -292,6 +304,7 @@ class CoreAIAgent:
             actions.append("follow_up_recommended")
         
         return actions if actions else ["general_assistance_provided"]
+    
     
     def _mock_response(self, message: str, user_id: str = None, 
                       context: Dict[str, Any] = None) -> AgentResponse:
@@ -409,7 +422,7 @@ class CoreAIAgent:
         return {
             "core_agent": "active",
             "api_configured": self.groq_client is not None,
-            "model": self.model,
+            "model": getattr(self, 'model', 'unknown'),
             "specialized_agents": {
                 name: "active" for name in self.agents.keys()
             },

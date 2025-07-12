@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Information - AI Agent CRM System</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark-soft: #1e293b;
+            --dark-light: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #374151;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(6, 182, 212, 0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: var(--glass);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 1.5rem 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Endpoints Section */
+        .endpoints-section {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .endpoints-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .endpoint-group {
+            margin-bottom: 2rem;
+        }
+
+        .endpoint-group h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .endpoint-item {
+            background: var(--dark-soft);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .method-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .method-get { background: var(--accent); color: white; }
+        .method-post { background: var(--success); color: white; }
+        .method-put { background: var(--warning); color: white; }
+        .method-delete { background: var(--danger); color: white; }
+
+        .endpoint-path {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: var(--text-primary);
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .endpoint-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex: 2;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: var(--glass);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--dark-light);
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .status-text {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 80px 1rem 2rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .endpoint-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-robot"></i> AI Agent CRM
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/dashboard"><i class="fas fa-comments"></i> Dashboard</a>
+                <a href="/docs-custom"><i class="fas fa-book"></i> Docs</a>
+                <a href="/docs" target="_blank"><i class="fas fa-external-link-alt"></i> Swagger</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-code"></i> API Information</h1>
+            <p>Multi-agent AI system for CRM automation with external platform integrations</p>
+            <div class="version-badge">
+                <i class="fas fa-tag"></i>
+                Version 2.0.0
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text">System Online & Ready</span>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="stat-number">4</div>
+                <div class="stat-label">Specialized Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="stat-number">15+</div>
+                <div class="stat-label">API Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <div class="stat-number">3</div>
+                <div class="stat-label">Platform Integrations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number">&lt;1s</div>
+                <div class="stat-label">Response Time</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/docs" class="action-btn" target="_blank">
+                <i class="fas fa-code"></i>
+                Explore API
+            </a>
+            <a href="/dashboard" class="action-btn secondary">
+                <i class="fas fa-comments"></i>
+                Try Dashboard
+            </a>
+            <a href="/health" class="action-btn secondary">
+                <i class="fas fa-heartbeat"></i>
+                Health Check
+            </a>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Agent System</h3>
+                </div>
+                <p class="feature-description">
+                    Specialized AI agents for different business functions
+                </p>
+                <ul class="feature-list">
+                    <li>Sales Agent - Lead qualification & pipeline management</li>
+                    <li>Operations Agent - Process automation & workflows</li>
+                    <li>Quote Agent - Pricing calculations & proposals</li>
+                    <li>Scheduler Agent - Meeting coordination & follow-ups</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3 class="feature-title">Platform Integrations</h3>
+                </div>
+                <p class="feature-description">
+                    Connect with popular messaging and communication platforms
+                </p>
+                <ul class="feature-list">
+                    <li>WhatsApp Business API integration</li>
+                    <li>Telegram Bot API support</li>
+                    <li>Embeddable web chat widget</li>
+                    <li>Real-time webhook processing</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="feature-title">Workflow Automation</h3>
+                </div>
+                <p class="feature-description">
+                    Automate complex business processes with AI-powered workflows
+                </p>
+                <ul class="feature-list">
+                    <li>Custom workflow creation</li>
+                    <li>Event-driven automation</li>
+                    <li>Multi-step process orchestration</li>
+                    <li>Real-time execution monitoring</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Enterprise Ready</h3>
+                </div>
+                <p class="feature-description">
+                    Built for production with security and scalability in mind
+                </p>
+                <ul class="feature-list">
+                    <li>Structured logging & monitoring</li>
+                    <li>Error handling & recovery</li>
+                    <li>Async processing for performance</li>
+                    <li>Comprehensive API documentation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Endpoints Section -->
+        <div class="endpoints-section">
+            <h2><i class="fas fa-list"></i> API Endpoints</h2>
+            
+            <div class="endpoint-group">
+                <h3>Core Agent</h3>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/agent/chat</span>
+                    <span class="endpoint-desc">Direct agent interaction and conversation</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/agent/delegate</span>
+                    <span class="endpoint-desc">Delegate tasks to specialized agents</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/agent/status</span>
+                    <span class="endpoint-desc">Check agent system status</span>
+                </div>
+            </div>
+
+            <div class="endpoint-group">
+                <h3>External Platform Webhooks</h3>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/whatsapp/webhook</span>
+                    <span class="endpoint-desc">WhatsApp Business API webhook</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/telegram/webhook</span>
+                    <span class="endpoint-desc">Telegram Bot API webhook</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/webchat/message</span>
+                    <span class="endpoint-desc">Web chat message processing</span>
+                </div>
+            </div>
+
+            <div class="endpoint-group">
+                <h3>Workflow Management</h3>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/workflows/create</span>
+                    <span class="endpoint-desc">Create automation workflows</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/workflows/{id}/execute</span>
+                    <span class="endpoint-desc">Execute workflow processes</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/workflows/</span>
+                    <span class="endpoint-desc">List available workflows</span>
+                </div>
+            </div>
+
+            <div class="endpoint-group">
+                <h3>System Information</h3>
+                <div class="endpoint-item">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/health</span>
+                    <span class="endpoint-desc">System health check</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/docs</span>
+                    <span class="endpoint-desc">Interactive API documentation</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/redoc</span>
+                    <span class="endpoint-desc">Alternative API documentation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
