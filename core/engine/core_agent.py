@@ -1,11 +1,11 @@
 """
 Core AI Agent Framework
-Simplified version for compatibility with Python 3.13 and newer LangChain
+Updated to use Groq's Llama model instead of OpenAI
 """
 
 import asyncio
 from typing import Dict, List, Optional, Any
-from langchain_openai import ChatOpenAI
+from groq import Groq
 from langchain.schema import HumanMessage, SystemMessage
 import structlog
 from pydantic import BaseModel
@@ -36,12 +36,11 @@ class CoreAIAgent:
     
     def __init__(self):
         try:
-            self.llm = ChatOpenAI(
-                model=settings.OPENAI_MODEL,
-                temperature=settings.DEFAULT_AGENT_TEMPERATURE,
-                max_tokens=settings.MAX_TOKENS,
-                api_key=settings.OPENAI_API_KEY
-            )
+            # Initialize Groq client
+            self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+            self.model = settings.GROQ_MODEL
+            self.temperature = settings.DEFAULT_AGENT_TEMPERATURE
+            self.max_tokens = settings.MAX_TOKENS
             
             # Simplified memory - just store recent messages
             self.conversation_memory: Dict[str, List[Dict[str, str]]] = {}
@@ -58,12 +57,44 @@ class CoreAIAgent:
             
         except Exception as e:
             logger.error(f"Error initializing CoreAIAgent: {str(e)}")
-            # Create a mock LLM for demo purposes if API key is placeholder
-            if "placeholder" in settings.OPENAI_API_KEY:
-                self.llm = None
+            # Create a mock setup for demo purposes if API key is placeholder
+            if "placeholder" in str(settings.GROQ_API_KEY) or not settings.GROQ_API_KEY:
+                self.groq_client = None
                 self.conversation_memory = {}
                 self.agents = {"sales": {}, "operations": {}, "quote": {}, "scheduler": {}}
-                logger.warning("Using mock mode - replace OPENAI_API_KEY with real key")
+                logger.warning("Using mock mode - replace GROQ_API_KEY with real key")
+    
+    async def _call_groq_llm(self, messages: List[Dict[str, str]]) -> str:
+        """Call Groq API with message history"""
+        try:
+            if self.groq_client is None:
+                return "Mock response - Please configure GROQ_API_KEY for real responses"
+            
+            # Convert messages to Groq format
+            groq_messages = []
+            for msg in messages:
+                if hasattr(msg, 'content'):
+                    if hasattr(msg, 'type') and msg.type == 'system':
+                        groq_messages.append({"role": "system", "content": msg.content})
+                    else:
+                        groq_messages.append({"role": "user", "content": msg.content})
+                else:
+                    groq_messages.append(msg)
+            
+            # Call Groq API
+            completion = self.groq_client.chat.completions.create(
+                model=self.model,
+                messages=groq_messages,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                stream=False  # For now, using non-streaming
+            )
+            
+            return completion.choices[0].message.content
+            
+        except Exception as e:
+            logger.error(f"Error calling Groq API: {str(e)}")
+            return f"I apologize, but I'm experiencing technical difficulties. Error: {str(e)}"
     
     def _create_sales_agent(self) -> Dict[str, str]:
         """Create sales agent configuration"""
@@ -107,7 +138,7 @@ class CoreAIAgent:
             logger.info(f"Processing message from user {user_id}: {message[:100]}...")
             
             # If using mock mode (placeholder API key)
-            if self.llm is None:
+            if self.groq_client is None:
                 return self._mock_response(message, user_id, context)
             
             # Add to conversation memory
@@ -144,28 +175,28 @@ class CoreAIAgent:
             # Add current message
             messages.append(HumanMessage(content=message))
             
-            # Call LLM
-            response = await asyncio.to_thread(self.llm.invoke, messages)
+            # Call Groq LLM
+            response_content = await self._call_groq_llm(messages)
             
             # Store response in memory
             if user_id:
                 self.conversation_memory[user_id].append({
                     "role": "assistant", 
-                    "content": response.content,
+                    "content": response_content,
                     "timestamp": "2025-06-28T10:00:00Z"
                 })
             
             # Determine actions taken based on message content
-            actions_taken = self._analyze_actions(message, response.content)
+            actions_taken = self._analyze_actions(message, response_content)
             
             agent_response = AgentResponse(
                 agent_type="core",
-                response=response.content,
+                response=response_content,
                 actions_taken=actions_taken,
                 metadata={
                     "user_id": user_id,
                     "context": context,
-                    "model_used": settings.OPENAI_MODEL
+                    "model_used": self.model
                 },
                 success=True
             )
@@ -325,15 +356,14 @@ class CoreAIAgent:
             Please provide a detailed response based on your specialization.
             """
             
-            # If we have a real LLM, use it
-            if self.llm is not None:
+            # If we have a real Groq client, use it
+            if self.groq_client is not None:
                 messages = [
-                    SystemMessage(content=specialist_prompt),
-                    HumanMessage(content=task)
+                    {"role": "system", "content": specialist_prompt},
+                    {"role": "user", "content": task}
                 ]
                 
-                response = await asyncio.to_thread(self.llm.invoke, messages)
-                response_text = response.content
+                response_text = await self._call_groq_llm(messages)
             else:
                 # Mock response for specialist
                 response_text = f"As a {agent_config['role']}, I would handle this task: {task}. "
@@ -365,12 +395,13 @@ class CoreAIAgent:
         """Get status information about all agents"""
         return {
             "core_agent": "active",
-            "api_configured": self.llm is not None,
+            "api_configured": self.groq_client is not None,
+            "model": self.model,
             "specialized_agents": {
                 name: "active" for name in self.agents.keys()
             },
             "conversation_users": len(self.conversation_memory),
-            "mode": "full" if self.llm is not None else "mock"
+            "mode": "full" if self.groq_client is not None else "mock"
         }
     
     def clear_memory(self, user_id: str = None):

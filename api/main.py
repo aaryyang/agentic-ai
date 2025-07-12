@@ -13,6 +13,7 @@ import structlog
 from .routes.agent import router as agent_router
 from .routes.webhooks import router as webhook_router
 from .routes.workflows import router as workflow_router
+from .routes.testing import testing_router
 
 # Configure logging
 structlog.configure(
@@ -77,9 +78,10 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(agent_router)
-app.include_router(webhook_router)
-app.include_router(workflow_router)
+app.include_router(agent_router, prefix="/agent", tags=["agent"])
+app.include_router(webhook_router, prefix="/webhooks", tags=["webhooks"])
+app.include_router(workflow_router, prefix="/workflows", tags=["workflows"])
+app.include_router(testing_router, tags=["testing"])
 
 
 @app.get("/health")

@@ -67,7 +67,7 @@ AGENT/
 
 ## 🛠️ Technology Stack
 
-- **AI Framework**: LangChain, OpenAI GPT-4
+- **AI Framework**: LangChain, Groq (Llama 4 Scout)
 - **Web Framework**: FastAPI, Uvicorn
 - **Data Validation**: Pydantic
 - **Logging**: Structlog
@@ -78,7 +78,7 @@ AGENT/
 
 ### Prerequisites
 - Python 3.11+ (tested with Python 3.13.2)
-- OpenAI API key
+- Groq API key (get from [Groq Console](https://console.groq.com))
 - Git (for version control)
 
 ### Installation
@@ -93,7 +93,8 @@ cp .env.example .env
 2. **Configure environment variables:**
 ```bash
 # Edit .env file with your API keys
-OPENAI_API_KEY=your_openai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=meta-llama/llama-4-scout-17b-16e-instruct
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token  # Optional
 WHATSAPP_API_TOKEN=your_whatsapp_api_token  # Optional
 ```
@@ -242,12 +243,13 @@ response = requests.post("http://localhost:8000/webchat/message", json={
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| `OPENAI_API_KEY` | OpenAI API key for LLM access | Yes | - |
-| `OPENAI_MODEL` | OpenAI model to use | No | `gpt-4o-mini` |
+| `GROQ_API_KEY` | Groq API key for LLM access | Yes | - |
+| `GROQ_MODEL` | Groq model to use | No | `meta-llama/llama-4-scout-17b-16e-instruct` |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token | No | - |
 | `WHATSAPP_API_TOKEN` | WhatsApp Business API token | No | - |
 | `DEFAULT_AGENT_TEMPERATURE` | LLM temperature setting | No | `0.7` |
 | `MAX_TOKENS` | Maximum tokens per response | No | `1000` |
+| `GROQ_STREAMING` | Enable streaming responses | No | `false` |
 | `LOG_LEVEL` | Logging level | No | `INFO` |
 
 ### Agent Configuration

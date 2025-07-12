@@ -1,11 +1,14 @@
 # Core AI Agent Dependencies
 langchain==0.1.20
-langchain-openai==0.1.8
 langchain-community==0.0.38
-openai==1.35.0
+groq==0.4.1
 pydantic==2.7.4
 pydantic-settings==2.3.4
 python-dotenv==1.0.1
+
+# Legacy OpenAI (optional fallback)
+langchain-openai==0.1.8
+openai==1.35.0
 
 # Web Framework
 fastapi==0.108.0
