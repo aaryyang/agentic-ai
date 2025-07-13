@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your_secret_key_for_production"
     CORS_ORIGINS: str = "*"
     
+    # API Security
+    API_KEY: Optional[str] = None
+    REQUIRE_API_KEY: bool = False
+    
     @property
     def is_production(self) -> bool:
         """Check if running in production mode"""

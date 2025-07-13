@@ -3,19 +3,21 @@
 version: 1
 build:
   commands:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
+    - pip install --upgrade pip setuptools wheel
+    - pip install --only-binary=:all: --prefer-binary -r requirements.txt
   
 services:
   - name: agentic-ai-api
     runtime: python3
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel
+      pip install --only-binary=:all: --prefer-binary -r requirements.txt
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
-        value: 3.13.2
+        value: 3.11.9
       - key: DEBUG
         value: false
       - key: DEVELOPMENT_MODE  

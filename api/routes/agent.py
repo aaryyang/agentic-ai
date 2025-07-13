@@ -5,7 +5,7 @@ Core agent API routes
 import sys
 import os
 from pathlib import Path
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..schemas.requests import ChatRequest, DelegationRequest
 from ..schemas.responses import AgentResponse, StatusResponse
 import structlog
@@ -13,6 +13,9 @@ import structlog
 # Initialize router and logger
 router = APIRouter()
 logger = structlog.get_logger()
+
+# Import auth dependency
+from ..auth import verify_api_key
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent.parent
@@ -38,7 +41,7 @@ except Exception as e:
 
 
 @router.post("/chat", response_model=dict)
-async def chat_with_agent(request: ChatRequest):
+async def chat_with_agent(request: ChatRequest, _: bool = Depends(verify_api_key)):
     """
     Chat with the core AI agent
     """
@@ -70,7 +73,7 @@ async def chat_with_agent(request: ChatRequest):
 
 
 @router.post("/delegate", response_model=dict) 
-async def delegate_to_agent(request: DelegationRequest):
+async def delegate_to_agent(request: DelegationRequest, _: bool = Depends(verify_api_key)):
     """
     Delegate a task to a specialist agent
     """

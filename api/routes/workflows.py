@@ -2,7 +2,7 @@
 Workflow automation API routes
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..schemas.requests import WorkflowRequest
 from ..schemas.responses import WorkflowResponse
 from typing import Dict, Any, List
@@ -11,9 +11,12 @@ import structlog
 logger = structlog.get_logger(__name__)
 router = APIRouter(prefix="/workflows", tags=["Workflows"])
 
+# Import auth dependency
+from ..auth import verify_api_key
+
 
 @router.post("/create", response_model=WorkflowResponse)
-async def create_workflow(request: WorkflowRequest):
+async def create_workflow(request: WorkflowRequest, _: bool = Depends(verify_api_key)):
     """Create new automation workflow"""
     try:
         from workflows.automation import WorkflowAutomation
