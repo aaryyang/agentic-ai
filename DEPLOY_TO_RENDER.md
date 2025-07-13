@@ -41,7 +41,7 @@ Your AI Agent system is now ready for production deployment on Render!
    ```
    Name: agentic-ai-crm
    Runtime: Python 3
-   Build Command: pip install -r requirements.txt
+   Build Command: pip install --upgrade pip setuptools wheel && pip install --only-binary=:all: --prefer-binary -r requirements.txt
    Start Command: uvicorn api.main:app --host 0.0.0.0 --port $PORT
    ```
 
@@ -55,6 +55,13 @@ GROQ_API_KEY=your_groq_api_key_here
 GROQ_MODEL=meta-llama/llama-4-scout-17b-16e-instruct
 SECRET_KEY=your_production_secret_key_make_it_long_and_secure
 ```
+
+### **API Security (Optional):**
+```
+API_KEY=your_secure_api_key_for_crm_integration
+REQUIRE_API_KEY=false
+```
+*Set REQUIRE_API_KEY=true if you want to secure the API endpoints*
 
 ### **Production Settings:**
 ```
@@ -172,6 +179,15 @@ After deployment, you'll have:
 **Your AI Agent system is now production-ready!** 🎉
 
 ## 🆘 **Troubleshooting**
+
+**Build fails with dependency conflicts?**
+- Quick fix: Use minimal requirements
+  ```bash
+  git mv requirements.txt requirements-full.txt
+  git mv requirements-production.txt requirements.txt
+  git commit -m "fix: use minimal requirements for Render"
+  git push origin main
+  ```
 
 **Build fails?**
 - Check `requirements.txt` for any problematic packages

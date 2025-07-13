@@ -1,38 +1,22 @@
 # Core AI Agent Dependencies (Stable versions for Render)
 langchain==0.0.350
-langchain-community==0.0.9
 groq==0.4.1
 pydantic==2.4.2
 pydantic-settings==2.0.3
 python-dotenv==1.0.0
-
-# Legacy OpenAI (optional fallback)
-langchain-openai==0.0.8
-openai==1.3.8
 
 # Web Framework (Stable versions)
 fastapi==0.100.1
 uvicorn==0.23.2
 websockets==11.0.3
 
-# External Platform Integrations
+# External Platform Integrations (Optional)
 python-telegram-bot==20.7
 twilio==8.12.0
 requests==2.31.0
 
-# Workflow & Task Management
-celery==5.3.4
-redis==5.0.1
-
-# Data Processing (Updated for Python 3.13 compatibility)
-pandas>=2.2.0
-numpy>=1.26.0
+# Data Processing (Compatible with langchain)
+numpy>=1.24.0,<2.0.0
 
 # Logging & Monitoring
 structlog==23.2.0
-prometheus-client==0.19.0
-
-# Development Tools
-black==23.12.1
-flake8==7.0.0
-pre-commit==3.6.0
