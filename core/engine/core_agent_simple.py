@@ -49,23 +49,10 @@ class CoreAIAgent:
             if not settings.GROQ_API_KEY:
                 raise ValueError("GROQ_API_KEY is required")
                 
-            # Initialize Groq client using environment variable approach
-            # This is more compatible across different Groq client versions
-            import os
-            os.environ["GROQ_API_KEY"] = settings.GROQ_API_KEY
-            
-            try:
-                # Try simple initialization first
-                self.groq_client = Groq()
-                logger.info("Groq client initialized successfully (env var method)")
-            except Exception as fallback_error:
-                try:
-                    # Fallback: try with explicit API key parameter
-                    self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
-                    logger.info("Groq client initialized successfully (direct method)")
-                except Exception as final_error:
-                    logger.error(f"Both Groq initialization methods failed: {final_error}")
-                    raise final_error
+            # Modern Groq client initialization (v0.30.0+)
+            # The latest version fixes the proxies issue
+            self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+            logger.info("Groq client initialized successfully")
                     
             self.model = settings.GROQ_MODEL or "mixtral-8x7b-32768"
             self.conversation_memory = {}

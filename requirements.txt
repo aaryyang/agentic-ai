@@ -5,8 +5,8 @@
 fastapi==0.112.0
 uvicorn[standard]==0.30.0
 
-# AI API (Direct Groq - no langchain)
-groq==0.4.1
+# AI API (Direct Groq - LATEST VERSION)
+groq==0.30.0
 
 # Data Validation & Settings
 pydantic==2.8.2
