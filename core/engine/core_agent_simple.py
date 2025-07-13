@@ -49,21 +49,23 @@ class CoreAIAgent:
             if not settings.GROQ_API_KEY:
                 raise ValueError("GROQ_API_KEY is required")
                 
-            # Initialize Groq client with minimal configuration
+            # Initialize Groq client using environment variable approach
+            # This is more compatible across different Groq client versions
+            import os
+            os.environ["GROQ_API_KEY"] = settings.GROQ_API_KEY
+            
             try:
-                self.groq_client = Groq(
-                    api_key=settings.GROQ_API_KEY
-                )
-                logger.info("Groq client initialized successfully")
-            except TypeError as e:
-                if "proxies" in str(e):
-                    # Fallback for older Groq client versions
-                    logger.warning("Trying fallback Groq client initialization")
-                    import os
-                    os.environ["GROQ_API_KEY"] = settings.GROQ_API_KEY
-                    self.groq_client = Groq()
-                else:
-                    raise e
+                # Try simple initialization first
+                self.groq_client = Groq()
+                logger.info("Groq client initialized successfully (env var method)")
+            except Exception as fallback_error:
+                try:
+                    # Fallback: try with explicit API key parameter
+                    self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+                    logger.info("Groq client initialized successfully (direct method)")
+                except Exception as final_error:
+                    logger.error(f"Both Groq initialization methods failed: {final_error}")
+                    raise final_error
                     
             self.model = settings.GROQ_MODEL or "mixtral-8x7b-32768"
             self.conversation_memory = {}
@@ -354,3 +356,20 @@ Provide helpful, professional responses tailored to business needs."""
                 del self.conversation_memory[user_id]
         else:
             self.conversation_memory.clear()
+    
+    async def test_groq_connection(self) -> bool:
+        """Test if Groq client is working"""
+        try:
+            if not self.groq_client:
+                return False
+                
+            # Simple test API call
+            response = self.groq_client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": "Hello"}],
+                max_tokens=10
+            )
+            return bool(response.choices[0].message.content)
+        except Exception as e:
+            logger.error(f"Groq connection test failed: {e}")
+            return False
