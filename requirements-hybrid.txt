@@ -1,0 +1,24 @@
+# HYBRID APPROACH - BEST OF BOTH WORLDS
+# Full LangChain functionality with dependency workarounds
+
+# Option 1: Use --no-deps to avoid conflicts
+# pip install langchain==0.2.16 --no-deps
+# pip install groq==0.9.0
+
+# Core AI (let pip resolve versions automatically)
+langchain>=0.2.0,<0.3.0
+langchain-groq>=0.1.0,<0.2.0
+groq>=0.8.0,<1.0.0
+
+# Data & Web (Fixed versions that work)
+pydantic==2.8.2
+pydantic-settings==2.4.0
+python-dotenv==1.0.0
+fastapi==0.112.0
+uvicorn[standard]==0.30.0
+
+# Utilities
+requests==2.31.0
+structlog==24.4.0
+
+# Let pip auto-resolve numpy and other deps

@@ -1,0 +1,311 @@
+"""
+Core AI Agent - Simplified for Render Deployment
+Direct Groq API integration without langchain dependencies
+"""
+
+import asyncio
+import json
+from typing import Dict, Any, Optional, List
+from groq import Groq
+from pydantic import BaseModel
+from config.settings import settings
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+
+class AgentResponse(BaseModel):
+    """Response from the AI agent"""
+    response: str
+    agent_type: str = "core"
+    success: bool = True
+    metadata: Dict[str, Any] = {}
+
+
+class CoreAIAgent:
+    """
+    Core AI Agent using direct Groq API
+    Simplified for reliable deployment
+    """
+    
+    def __init__(self):
+        """Initialize the core agent with Groq client"""
+        try:
+            if not settings.GROQ_API_KEY:
+                raise ValueError("GROQ_API_KEY is required")
+                
+            self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+            self.model = settings.GROQ_MODEL or "mixtral-8x7b-32768"
+            self.conversation_memory = {}
+            
+            logger.info("Core AI Agent initialized successfully", model=self.model)
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize Core AI Agent: {str(e)}")
+            raise
+    
+    async def process_message(
+        self, 
+        message: str, 
+        user_id: str = "default", 
+        context: Optional[Dict[str, Any]] = None
+    ) -> AgentResponse:
+        """
+        Process a message using the core AI agent
+        
+        Args:
+            message: User's message
+            user_id: Unique identifier for the user
+            context: Optional context information
+            
+        Returns:
+            AgentResponse with the AI's response
+        """
+        try:
+            # Prepare conversation context
+            conversation_context = self._build_conversation_context(message, user_id, context)
+            
+            # Call Groq API
+            response = await self._call_groq_api(conversation_context)
+            
+            # Store in memory
+            self._update_conversation_memory(user_id, message, response)
+            
+            # Determine agent type based on content
+            agent_type = self._determine_agent_type(message, response)
+            
+            return AgentResponse(
+                response=response,
+                agent_type=agent_type,
+                success=True,
+                metadata={
+                    "user_id": user_id,
+                    "model": self.model,
+                    "context_provided": bool(context)
+                }
+            )
+            
+        except Exception as e:
+            logger.error(f"Error processing message: {str(e)}")
+            return AgentResponse(
+                response=f"I apologize, but I encountered an error: {str(e)}",
+                agent_type="core",
+                success=False,
+                metadata={"error": str(e)}
+            )
+    
+    async def delegate_to_agent(
+        self,
+        agent_type: str,
+        task: str,
+        data: Optional[Dict[str, Any]] = None,
+        user_id: str = "default"
+    ) -> AgentResponse:
+        """
+        Delegate a task to a specialist agent
+        
+        Args:
+            agent_type: Type of agent (sales, operations, quote, scheduler)
+            task: Specific task to perform
+            data: Additional data for the task
+            user_id: User identifier
+            
+        Returns:
+            AgentResponse from the specialist agent
+        """
+        try:
+            # Create specialized prompt based on agent type
+            specialist_prompt = self._create_specialist_prompt(agent_type, task, data)
+            
+            # Process with specialist context
+            response = await self.process_message(
+                specialist_prompt,
+                user_id=user_id,
+                context={"agent_type": agent_type, "task": task, "data": data}
+            )
+            
+            # Update agent type in response
+            response.agent_type = agent_type
+            response.metadata.update({
+                "delegated_task": task,
+                "specialist_agent": agent_type
+            })
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error delegating to {agent_type} agent: {str(e)}")
+            return AgentResponse(
+                response=f"Error in {agent_type} agent: {str(e)}",
+                agent_type=agent_type,
+                success=False,
+                metadata={"error": str(e)}
+            )
+    
+    def _build_conversation_context(
+        self, 
+        message: str, 
+        user_id: str, 
+        context: Optional[Dict[str, Any]]
+    ) -> str:
+        """Build conversation context for the AI model"""
+        
+        # Get conversation history
+        history = self.conversation_memory.get(user_id, [])
+        
+        # Build system prompt
+        system_prompt = """You are an intelligent AI assistant specialized in CRM automation and business processes. You help with:
+
+1. Sales: Lead qualification, pipeline management, deal analysis
+2. Operations: Process automation, workflow optimization, task management  
+3. Quotes: Pricing calculations, proposal generation, quote creation
+4. Scheduling: Meeting coordination, calendar management, follow-ups
+
+Provide helpful, professional responses tailored to business needs."""
+        
+        # Build conversation
+        conversation = f"System: {system_prompt}\n\n"
+        
+        # Add context if provided
+        if context:
+            conversation += f"Context: {json.dumps(context, indent=2)}\n\n"
+        
+        # Add recent conversation history
+        for entry in history[-5:]:  # Last 5 exchanges
+            conversation += f"User: {entry['user']}\nAssistant: {entry['assistant']}\n\n"
+        
+        # Add current message
+        conversation += f"User: {message}\nAssistant:"
+        
+        return conversation
+    
+    async def _call_groq_api(self, conversation_context: str) -> str:
+        """Call Groq API directly"""
+        try:
+            response = self.groq_client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "user", "content": conversation_context}
+                ],
+                temperature=0.7,
+                max_tokens=1500,
+                top_p=1,
+                stream=False
+            )
+            
+            return response.choices[0].message.content.strip()
+            
+        except Exception as e:
+            logger.error(f"Groq API call failed: {str(e)}")
+            raise Exception(f"AI service temporarily unavailable: {str(e)}")
+    
+    def _update_conversation_memory(self, user_id: str, user_message: str, ai_response: str):
+        """Update conversation memory for the user"""
+        if user_id not in self.conversation_memory:
+            self.conversation_memory[user_id] = []
+        
+        self.conversation_memory[user_id].append({
+            "user": user_message,
+            "assistant": ai_response
+        })
+        
+        # Keep only last 10 exchanges to manage memory
+        if len(self.conversation_memory[user_id]) > 10:
+            self.conversation_memory[user_id] = self.conversation_memory[user_id][-10:]
+    
+    def _determine_agent_type(self, message: str, response: str) -> str:
+        """Determine which type of agent this interaction represents"""
+        message_lower = message.lower()
+        response_lower = response.lower()
+        
+        # Sales keywords
+        if any(word in message_lower for word in ['lead', 'prospect', 'sale', 'deal', 'customer', 'revenue']):
+            return 'sales'
+        
+        # Operations keywords  
+        if any(word in message_lower for word in ['process', 'workflow', 'automate', 'task', 'operation']):
+            return 'operations'
+        
+        # Quote keywords
+        if any(word in message_lower for word in ['quote', 'price', 'cost', 'proposal', 'estimate']):
+            return 'quote'
+        
+        # Scheduling keywords
+        if any(word in message_lower for word in ['schedule', 'meeting', 'calendar', 'appointment', 'time']):
+            return 'scheduler'
+        
+        return 'core'
+    
+    def _create_specialist_prompt(
+        self, 
+        agent_type: str, 
+        task: str, 
+        data: Optional[Dict[str, Any]]
+    ) -> str:
+        """Create a specialized prompt for different agent types"""
+        
+        prompts = {
+            'sales': f"""As a Sales AI specialist, help with this task: {task}
+            
+            Focus on:
+            - Lead qualification and scoring
+            - Pipeline management
+            - Deal progression strategies
+            - Revenue optimization
+            - Customer relationship building
+            
+            Data provided: {json.dumps(data, indent=2) if data else 'None'}
+            
+            Provide actionable sales insights and recommendations.""",
+            
+            'operations': f"""As an Operations AI specialist, help with this task: {task}
+            
+            Focus on:
+            - Process automation
+            - Workflow optimization  
+            - Task management
+            - Efficiency improvements
+            - Resource allocation
+            
+            Data provided: {json.dumps(data, indent=2) if data else 'None'}
+            
+            Provide operational recommendations and process improvements.""",
+            
+            'quote': f"""As a Quote AI specialist, help with this task: {task}
+            
+            Focus on:
+            - Pricing analysis
+            - Quote generation
+            - Proposal creation
+            - Cost calculations
+            - Competitive positioning
+            
+            Data provided: {json.dumps(data, indent=2) if data else 'None'}
+            
+            Provide pricing recommendations and quote strategies.""",
+            
+            'scheduler': f"""As a Scheduling AI specialist, help with this task: {task}
+            
+            Focus on:
+            - Meeting coordination
+            - Calendar management
+            - Appointment scheduling
+            - Follow-up planning
+            - Time optimization
+            
+            Data provided: {json.dumps(data, indent=2) if data else 'None'}
+            
+            Provide scheduling recommendations and calendar strategies."""
+        }
+        
+        return prompts.get(agent_type, f"Help with this task: {task}")
+    
+    async def get_status(self) -> Dict[str, Any]:
+        """Get agent status information"""
+        return {
+            "status": "active",
+            "model": self.model,
+            "active_conversations": len(self.conversation_memory),
+            "api_available": bool(self.groq_client),
+            "version": "2.0.0-simplified"
+        }

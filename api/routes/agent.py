@@ -21,9 +21,9 @@ from ..auth import verify_api_key
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-# Direct import of CoreAIAgent
+# Direct import of simplified CoreAIAgent
 try:
-    from core.engine.core_agent import CoreAIAgent
+    from core.engine.core_agent_simple import CoreAIAgent
     AGENT_AVAILABLE = True
 except ImportError as e:
     print(f"Warning: Could not import CoreAIAgent: {e}")
