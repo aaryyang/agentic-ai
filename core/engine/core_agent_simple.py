@@ -34,7 +34,10 @@ class CoreAIAgent:
             if not settings.GROQ_API_KEY:
                 raise ValueError("GROQ_API_KEY is required")
                 
-            self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
+            # Initialize Groq client with just the API key
+            self.groq_client = Groq(
+                api_key=settings.GROQ_API_KEY
+            )
             self.model = settings.GROQ_MODEL or "mixtral-8x7b-32768"
             self.conversation_memory = {}
             
@@ -42,7 +45,11 @@ class CoreAIAgent:
             
         except Exception as e:
             logger.error(f"Failed to initialize Core AI Agent: {str(e)}")
-            raise
+            # Don't raise the exception to allow the service to start
+            self.groq_client = None
+            self.model = "mixtral-8x7b-32768"
+            self.conversation_memory = {}
+            logger.warning("Core AI Agent initialized in fallback mode")
     
     async def process_message(
         self, 
@@ -182,6 +189,9 @@ Provide helpful, professional responses tailored to business needs."""
     async def _call_groq_api(self, conversation_context: str) -> str:
         """Call Groq API directly"""
         try:
+            if not self.groq_client:
+                raise Exception("Groq client not initialized - check API key configuration")
+                
             response = self.groq_client.chat.completions.create(
                 model=self.model,
                 messages=[
