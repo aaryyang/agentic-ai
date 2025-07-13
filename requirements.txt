@@ -1,19 +1,20 @@
-# Core AI Agent Dependencies (Stable versions for Render)
-langchain==0.0.350
+# FINAL RENDER-COMPATIBLE REQUIREMENTS
+# Using newer versions compatible with Python 3.13 and numpy 2.x
+
+# Core AI (newer versions that work with numpy 2.x)
+langchain==0.3.0
+langchain-groq==0.2.0
 groq==0.4.1
-pydantic==2.4.2
-pydantic-settings==2.0.3
+
+# Data validation (compatible versions)
+pydantic==2.8.2
+pydantic-settings==2.4.0
 python-dotenv==1.0.0
 
-# Web Framework (Stable versions)
-fastapi==0.100.1
-uvicorn==0.23.2
-websockets==11.0.3
+# Web framework
+fastapi==0.112.0
+uvicorn[standard]==0.30.0
 
-# External Platform Integrations (Optional)
-python-telegram-bot==20.7
-twilio==8.12.0
+# Basic dependencies
 requests==2.31.0
-
-# Logging & Monitoring
-structlog==23.2.0
+structlog==24.4.0

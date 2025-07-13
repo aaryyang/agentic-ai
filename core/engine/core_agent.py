@@ -1,13 +1,12 @@
 """
 Core AI Agent Framework
-Updated to use Groq's Llama model instead of OpenAI
+Simplified version using only Groq directly
 """
 
 import asyncio
 import re
 from typing import Dict, List, Optional, Any
 from groq import Groq
-from langchain.schema import HumanMessage, SystemMessage
 import structlog
 from pydantic import BaseModel
 
@@ -177,16 +176,16 @@ class CoreAIAgent:
             if user_id and user_id in self.conversation_memory:
                 recent_messages = self.conversation_memory[user_id][-5:]  # Last 5 messages
             
-            # Create messages for the LLM
-            messages = [SystemMessage(content=system_prompt)]
+            # Create messages for the LLM (using Groq format directly)
+            messages = [{"role": "system", "content": system_prompt}]
             
             # Add recent conversation context
             for msg in recent_messages[:-1]:  # Exclude the current message
                 if msg["role"] == "user":
-                    messages.append(HumanMessage(content=msg["content"]))
+                    messages.append({"role": "user", "content": msg["content"]})
             
             # Add current message
-            messages.append(HumanMessage(content=message))
+            messages.append({"role": "user", "content": message})
             
             # Call Groq LLM
             response_content = await self._call_groq_llm(messages)
