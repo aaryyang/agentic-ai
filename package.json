@@ -4,10 +4,9 @@
   "description": "Multi-agent AI CRM system with LangChain and FastAPI",
   "scripts": {
     "dev": "uvicorn api.main:app --reload --port 8000 --host 0.0.0.0",
-    "start": "uvicorn api.main:app --port 8000 --host 0.0.0.0",
-    "prod": "uvicorn api.main:app --port 8000 --host 0.0.0.0 --workers 4",
+    "start": "uvicorn api.main:app --host 0.0.0.0 --port $PORT",
+    "prod": "uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 4",
     "chat": "python scripts/interactive_chat.py",
-    "test": "pytest tests/ -v",
     "lint": "black . && flake8 .",
     "install": "pip install -r requirements.txt",
     "clean": "find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true"

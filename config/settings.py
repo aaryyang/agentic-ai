@@ -36,6 +36,18 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your_secret_key_for_production"
     CORS_ORIGINS: str = "*"
     
+    @property
+    def is_production(self) -> bool:
+        """Check if running in production mode"""
+        return not self.DEVELOPMENT_MODE and not self.DEBUG
+    
+    @property
+    def cors_origins_list(self) -> list:
+        """Get CORS origins as a list"""
+        if self.CORS_ORIGINS == "*":
+            return ["*"]
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+    
     # External Platform Configuration
     TELEGRAM_BOT_TOKEN: Optional[str] = None
     WHATSAPP_API_TOKEN: Optional[str] = None

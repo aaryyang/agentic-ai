@@ -1,0 +1,31 @@
+# 🚀 Render Deployment Configuration
+
+version: 1
+build:
+  commands:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+  
+services:
+  - name: agentic-ai-api
+    runtime: python3
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.2
+      - key: DEBUG
+        value: false
+      - key: DEVELOPMENT_MODE  
+        value: false
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        fromService: true
+    # Add your environment variables in Render dashboard:
+    # GROQ_API_KEY=your_groq_api_key_here
+    # GROQ_MODEL=meta-llama/llama-4-scout-17b-16e-instruct
+    # SECRET_KEY=your_production_secret_key
+    # CORS_ORIGINS=https://your-domain.com

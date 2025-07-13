@@ -70,12 +70,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Add CORS middleware
+# Import settings for CORS configuration
+from config.settings import settings
+
+# Add CORS middleware with environment-aware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
