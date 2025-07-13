@@ -1,21 +1,28 @@
 {
-  "name": "ai-agent-crm",
+  "name": "agentic-ai-crm",
   "version": "1.0.0",
-  "description": "Multi-agent AI CRM system with LangChain and FastAPI",
+  "description": "LangChain-based multi-agent AI system for CRM automation",
+  "main": "index.js",
   "scripts": {
-    "dev": "uvicorn api.main:app --reload --port 8000 --host 0.0.0.0",
-    "start": "uvicorn api.main:app --host 0.0.0.0 --port $PORT",
-    "prod": "uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 4",
-    "chat": "python scripts/interactive_chat.py",
-    "lint": "black . && flake8 .",
-    "install": "pip install -r requirements.txt",
-    "clean": "find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true"
+    "dev": "uvicorn api.main:app --reload --host 0.0.0.0 --port 8000",
+    "start": "uvicorn api.main:app --host 0.0.0.0 --port 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aaryyang/agentic-ai.git"
+    "url": "git+https://github.com/aaryyang/agentic-ai.git"
   },
-  "keywords": ["ai", "agent", "crm", "langchain", "fastapi", "groq"],
-  "author": "Your Name",
-  "license": "MIT"
+  "keywords": [
+    "ai",
+    "crm",
+    "automation",
+    "langchain",
+    "fastapi"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aaryyang/agentic-ai/issues"
+  },
+  "homepage": "https://github.com/aaryyang/agentic-ai#readme"
 }

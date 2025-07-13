@@ -1,12 +1,12 @@
-# FINAL RENDER DEPLOYMENT - ULTRA MINIMAL
-# No langchain, no numpy, no conflicts - GUARANTEED TO WORK
+# PRODUCTION REQUIREMENTS
+# Minimal dependencies for production deployment
 
 # Core Web Framework
 fastapi==0.112.0
 uvicorn[standard]==0.30.0
 
-# AI API (Direct Groq - no langchain)
-groq==0.4.1
+# AI API (Direct Groq - LATEST VERSION)
+groq==0.30.0
 
 # Data Validation & Settings
 pydantic==2.8.2
@@ -16,5 +16,3 @@ python-dotenv==1.0.0
 # Basic HTTP & Logging
 requests==2.31.0
 structlog==24.4.0
-
-# That's it - minimal but complete!
