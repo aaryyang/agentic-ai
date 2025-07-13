@@ -6,12 +6,24 @@ Direct Groq API integration without langchain dependencies
 import asyncio
 import json
 from typing import Dict, Any, Optional, List
-from groq import Groq
-from pydantic import BaseModel
-from config.settings import settings
 import structlog
 
+# Import settings first
+from config.settings import settings
+
+# Initialize logger
 logger = structlog.get_logger(__name__)
+
+# Try to import Groq with error handling
+try:
+    from groq import Groq
+    GROQ_AVAILABLE = True
+except ImportError as e:
+    logger.error(f"Groq library not available: {e}")
+    GROQ_AVAILABLE = False
+    Groq = None
+
+from pydantic import BaseModel
 
 
 class AgentResponse(BaseModel):
@@ -31,13 +43,28 @@ class CoreAIAgent:
     def __init__(self):
         """Initialize the core agent with Groq client"""
         try:
+            if not GROQ_AVAILABLE:
+                raise ValueError("Groq library is not available")
+                
             if not settings.GROQ_API_KEY:
                 raise ValueError("GROQ_API_KEY is required")
                 
-            # Initialize Groq client with just the API key
-            self.groq_client = Groq(
-                api_key=settings.GROQ_API_KEY
-            )
+            # Initialize Groq client with minimal configuration
+            try:
+                self.groq_client = Groq(
+                    api_key=settings.GROQ_API_KEY
+                )
+                logger.info("Groq client initialized successfully")
+            except TypeError as e:
+                if "proxies" in str(e):
+                    # Fallback for older Groq client versions
+                    logger.warning("Trying fallback Groq client initialization")
+                    import os
+                    os.environ["GROQ_API_KEY"] = settings.GROQ_API_KEY
+                    self.groq_client = Groq()
+                else:
+                    raise e
+                    
             self.model = settings.GROQ_MODEL or "mixtral-8x7b-32768"
             self.conversation_memory = {}
             
@@ -319,3 +346,11 @@ Provide helpful, professional responses tailored to business needs."""
             "api_available": bool(self.groq_client),
             "version": "2.0.0-simplified"
         }
+    
+    def clear_memory(self, user_id: Optional[str] = None):
+        """Clear conversation memory for a user or all users"""
+        if user_id:
+            if user_id in self.conversation_memory:
+                del self.conversation_memory[user_id]
+        else:
+            self.conversation_memory.clear()

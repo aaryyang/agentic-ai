@@ -86,10 +86,11 @@ async def delegate_to_agent(request: DelegationRequest, _: bool = Depends(verify
             
         logger.info(f"Delegating task to {request.agent_type} agent")
         
-        response = await core_agent.delegate_to_specialist(
+        response = await core_agent.delegate_to_agent(
             agent_type=request.agent_type,
             task=request.task,
-            context=request.context or {}
+            data=request.context or {},
+            user_id=request.user_id or "default"
         )
         
         return {
